@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { CreateCourseModal } from "@/components/CreateCourseModal";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Calendar, TrendingUp, AlertCircle } from "lucide-react";

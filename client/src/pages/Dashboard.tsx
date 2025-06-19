@@ -9,7 +9,7 @@ import { ActivityItem } from "@/components/ActivityItem";
 import { QuickActionModal } from "@/components/QuickActionModal";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 
