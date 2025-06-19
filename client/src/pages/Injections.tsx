@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { CreateInjectionModal } from "@/components/CreateInjectionModal";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
-import { Syringe, MapPin, Clock, Camera, Plus } from "lucide-react";
+import { Syringe, MapPin, Clock, Camera, Plus, Zap, Award } from "lucide-react";
 
 interface Injection {
   id: number;
@@ -27,6 +28,7 @@ interface Injection {
 export default function Injections() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -44,18 +46,6 @@ export default function Injections() {
   const { data: injections, isLoading } = useQuery<Injection[]>({
     queryKey: ["/api/injections"],
     enabled: !!user,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   const formatDateTime = (dateString: string) => {
@@ -239,6 +229,7 @@ export default function Injections() {
                       Start logging your injections to track your progress and build streaks
                     </p>
                     <Button
+                      onClick={() => setIsCreateModalOpen(true)}
                       className="bg-gradient-to-r from-health-green to-health-green/80 hover:from-health-green/90 hover:to-health-green/70"
                     >
                       <Syringe className="w-4 h-4 mr-2" />
@@ -288,7 +279,16 @@ export default function Injections() {
       </div>
 
       {/* Floating Action Button */}
-      <FloatingActionButton icon={<Syringe className="w-6 h-6" />} />
+      <FloatingActionButton 
+        icon={<Syringe className="w-6 h-6" />} 
+        onClick={() => setIsCreateModalOpen(true)}
+      />
+
+      {/* Create Injection Modal */}
+      <CreateInjectionModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
     </>
   );
 }

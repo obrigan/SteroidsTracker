@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { CreateCourseModal } from "@/components/CreateCourseModal";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Calendar, TrendingUp, AlertCircle } from "lucide-react";
@@ -28,6 +29,7 @@ interface Course {
 export default function Courses() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -45,18 +47,6 @@ export default function Courses() {
   const { data: courses, isLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
     enabled: !!user,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   const getStatusColor = (status: string) => {
@@ -120,6 +110,7 @@ export default function Courses() {
               </div>
               <Button
                 size="sm"
+                onClick={() => setIsCreateModalOpen(true)}
                 className="bg-medical-blue hover:bg-medical-blue/90 rounded-full"
               >
                 <Plus className="w-4 h-4 mr-1" />
@@ -227,6 +218,7 @@ export default function Courses() {
                       Start your first steroid cycle to begin tracking your progress
                     </p>
                     <Button
+                      onClick={() => setIsCreateModalOpen(true)}
                       className="bg-gradient-to-r from-medical-blue to-health-green hover:from-medical-blue/90 hover:to-health-green/90"
                     >
                       <Plus className="w-4 h-4 mr-2" />
@@ -266,7 +258,16 @@ export default function Courses() {
       </div>
 
       {/* Floating Action Button */}
-      <FloatingActionButton icon={<Plus className="w-6 h-6" />} />
+      <FloatingActionButton 
+        icon={<Plus className="w-6 h-6" />} 
+        onClick={() => setIsCreateModalOpen(true)}
+      />
+
+      {/* Create Course Modal */}
+      <CreateCourseModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
     </>
   );
 }

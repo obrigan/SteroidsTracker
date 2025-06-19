@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { CreateBloodTestModal } from "@/components/CreateBloodTestModal";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
-import { TestTube, Calendar, TrendingUp, TrendingDown, AlertTriangle, Plus } from "lucide-react";
+import { TestTube, Calendar, TrendingUp, TrendingDown, AlertTriangle, Plus, CheckCircle, XCircle } from "lucide-react";
 
 interface BloodTest {
   id: number;
@@ -25,6 +26,7 @@ interface BloodTest {
 export default function BloodTests() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -42,18 +44,6 @@ export default function BloodTests() {
   const { data: bloodTests, isLoading } = useQuery<BloodTest[]>({
     queryKey: ["/api/blood-tests"],
     enabled: !!user,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   const formatDate = (dateString: string) => {
