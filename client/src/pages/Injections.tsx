@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { CreateInjectionModal } from "@/components/CreateInjectionModal";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Syringe, MapPin, Clock, Camera, Plus, Zap, Award } from "lucide-react";

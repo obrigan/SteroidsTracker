@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,7 +57,7 @@ const commonTests = {
 export function CreateBloodTestModal({ isOpen, onClose }: CreateBloodTestModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Temporary removal of useRef to fix React error
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [testResults, setTestResults] = useState<Record<string, string>>({});
@@ -182,9 +182,6 @@ export function CreateBloodTestModal({ isOpen, onClose }: CreateBloodTestModalPr
   const removePhoto = () => {
     setSelectedPhoto(null);
     setPhotoPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
 
   const addTestResult = () => {
@@ -414,26 +411,13 @@ export function CreateBloodTestModal({ isOpen, onClose }: CreateBloodTestModalPr
                   </Button>
                 </div>
               ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full bg-deep-black border-gray-700 text-gray-300 hover:bg-gray-800 h-20"
-                >
+                <div className="w-full bg-deep-black border-gray-700 text-gray-300 h-20 flex items-center justify-center rounded border-2 border-dashed">
                   <div className="flex flex-col items-center space-y-2">
                     <Upload className="w-6 h-6" />
-                    <span className="text-sm">Добавить фото результатов</span>
+                    <span className="text-sm">Фото (временно недоступно)</span>
                   </div>
-                </Button>
+                </div>
               )}
-              
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoSelect}
-                className="hidden"
-              />
             </div>
 
             <div className="flex space-x-3 pt-4">

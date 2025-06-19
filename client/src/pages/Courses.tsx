@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { CreateCourseModal } from "@/components/CreateCourseModal";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Calendar, TrendingUp, AlertCircle, Clock, Target, Syringe, MoreHorizontal, Play, Pause, Square } from "lucide-react";
