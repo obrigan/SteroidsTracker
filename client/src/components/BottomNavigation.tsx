@@ -1,12 +1,13 @@
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Home, Pill, Syringe, TestTube, User } from "lucide-react";
+import { Home, Pill, Syringe, TestTube, User, BookOpen } from "lucide-react";
 
 const tabs = [
   { id: "home", path: "/", icon: Home, label: "Home", color: "medical-blue" },
   { id: "courses", path: "/courses", icon: Pill, label: "Courses", color: "medical-blue" },
   { id: "injections", path: "/injections", icon: Syringe, label: "Injections", color: "health-green" },
   { id: "tests", path: "/blood-tests", icon: TestTube, label: "Tests", color: "energy-orange" },
+  { id: "learning", path: "/learning", icon: BookOpen, label: "Learning", color: "purple-400" },
   { id: "profile", path: "/profile", icon: User, label: "Profile", color: "purple-400" },
 ];
 

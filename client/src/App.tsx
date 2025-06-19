@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import Courses from "@/pages/Courses";
 import Injections from "@/pages/Injections";
 import BloodTests from "@/pages/BloodTests";
+import Learning from "@/pages/Learning";
 import Profile from "@/pages/Profile";
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
             <Route path="/courses" component={Courses} />
             <Route path="/injections" component={Injections} />
             <Route path="/blood-tests" component={BloodTests} />
+            <Route path="/learning" component={Learning} />
             <Route path="/profile" component={Profile} />
           </>
         )}

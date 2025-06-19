@@ -8,6 +8,9 @@ import { StatCard } from "@/components/StatCard";
 import { ActivityItem } from "@/components/ActivityItem";
 import { QuickActionModal } from "@/components/QuickActionModal";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { CourseHeroSection } from "@/components/CourseHeroSection";
+import { QuickActions } from "@/components/QuickActions";
+import { GamificationSection } from "@/components/GamificationSection";
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -55,35 +58,11 @@ export default function Dashboard() {
   const { data: stats, isLoading: isStatsLoading } = useQuery<DashboardStats>({
     queryKey: ["/api/dashboard/stats"],
     enabled: !!user,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   const { data: activities, isLoading: isActivitiesLoading } = useQuery<Activity[]>({
     queryKey: ["/api/dashboard/activity"],
     enabled: !!user,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   if (isAuthLoading || isStatsLoading) {
@@ -162,28 +141,31 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* Current Course Status */}
-            {stats && stats.activeCourses > 0 && (
-              <Card className="bg-gradient-to-r from-medical-blue/20 to-medical-blue/10 border border-medical-blue/30 mb-6">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-medical-blue text-sm font-medium">Active Course</p>
-                      <h3 className="text-white font-google-sans font-semibold text-lg">
-                        Current Cycle Running
-                      </h3>
-                      <p className="text-gray-400 text-sm">Track your progress</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-medical-blue">
-                        {stats.activeCourses}
-                      </div>
-                      <p className="text-xs text-gray-400">active</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Course Hero Section */}
+            <CourseHeroSection 
+              activeCourse={stats?.activeCourses ? {
+                name: "Тестостерон Энантат 500мг",
+                currentWeek: 6,
+                totalWeeks: 12,
+                nextInjectionDays: 2,
+                phase: "active"
+              } : undefined}
+            />
+
+            {/* Gamification Section */}
+            <GamificationSection
+              userLevel={stats?.level || 1}
+              currentXP={stats?.xp || 0}
+              xpToNextLevel={xpForNextLevel}
+              recentAchievements={[]}
+            />
+
+            {/* Quick Actions Section */}
+            <QuickActions
+              onAddInjection={() => setIsQuickActionOpen(true)}
+              onAddBloodTest={() => setIsQuickActionOpen(true)}
+              onAddPhoto={() => setIsQuickActionOpen(true)}
+            />
           </motion.div>
           
           {/* Stats Ring Section */}
@@ -195,55 +177,54 @@ export default function Dashboard() {
           >
             <h2 className="text-lg font-google-sans font-semibold mb-4">Statistics</h2>
             
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <StatCard
                 value={stats?.activeCourses || 0}
-                label="Active Courses"
+                label="Активные курсы"
                 color="medical-blue"
                 progress={Math.min((stats?.activeCourses || 0) * 50, 100)}
+                icon="courses"
               />
               <StatCard
                 value={stats?.totalInjections || 0}
-                label="Total Injections"
+                label="Всего инъекций"
                 color="health-green"
                 progress={Math.min((stats?.totalInjections || 0) * 2, 100)}
+                icon="injections"
               />
               <StatCard
                 value={stats?.totalBloodTests || 0}
-                label="Blood Tests"
+                label="Анализы крови"
                 color="energy-orange"
                 progress={Math.min((stats?.totalBloodTests || 0) * 20, 100)}
+                icon="tests"
+              />
+              <StatCard
+                value={stats?.currentStreak || 0}
+                label="Текущий стрик"
+                color="purple-400"
+                progress={Math.min((stats?.currentStreak || 0) * 10, 100)}
+                icon="streak"
               />
             </div>
           </motion.div>
           
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="px-6 mb-8"
-          >
-            <h2 className="text-lg font-google-sans font-semibold mb-4">Quick Actions</h2>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <Button
-                className="bg-gradient-to-br from-health-green to-health-green/80 h-20 rounded-2xl flex flex-col items-center justify-center space-y-2 hover:scale-105 transition-transform"
-                onClick={() => setIsQuickActionOpen(true)}
-              >
-                <span className="text-2xl">💉</span>
-                <span className="font-google-sans font-semibold">Add Injection</span>
-              </Button>
-              
-              <Button
-                className="bg-gradient-to-br from-energy-orange to-energy-orange/80 h-20 rounded-2xl flex flex-col items-center justify-center space-y-2 hover:scale-105 transition-transform"
-                onClick={() => setIsQuickActionOpen(true)}
-              >
-                <span className="text-2xl">💊</span>
-                <span className="font-google-sans font-semibold">Add Pill</span>
-              </Button>
-            </div>
-          </motion.div>
+          {/* Recent Activity Section */}
+          {activities && activities.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="px-6 mb-8"
+            >
+              <h2 className="text-lg font-google-sans font-semibold mb-4">Недавняя активность</h2>
+              <div className="space-y-3">
+                {activities.slice(0, 3).map((activity: any, index: number) => (
+                  <ActivityItem key={activity.id} activity={activity} index={index} />
+                ))}
+              </div>
+            </motion.div>
+          )}
           
           {/* Gamification Section */}
           {stats && (
