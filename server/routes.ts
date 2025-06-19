@@ -43,33 +43,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use("/uploads", express.static("uploads"));
 
-  // Development authentication middleware
-  const isDevelopment = process.env.NODE_ENV === "development";
+  // Disable authentication - always use mock user
   const devAuth = async (req: any, res: any, next: any) => {
-    if (isDevelopment) {
-      const mockUserId = "dev-user-123";
-      let user = await storage.getUser(mockUserId);
-      
-      if (!user) {
-        user = await storage.upsertUser({
-          id: mockUserId,
-          email: "dev@example.com",
-          firstName: "Dev",
-          lastName: "User",
-          profileImageUrl: null,
-          level: 1,
-          xp: 0,
-        });
-      }
-      
-      // Mock the user object structure expected by routes
-      req.user = {
-        claims: { sub: mockUserId }
-      };
-      next();
-    } else {
-      isAuthenticated(req, res, next);
+    const mockUserId = "dev-user-123";
+    let user = await storage.getUser(mockUserId);
+    
+    if (!user) {
+      user = await storage.upsertUser({
+        id: mockUserId,
+        email: "dev@example.com",
+        firstName: "Dev",
+        lastName: "User",
+        profileImageUrl: null,
+        level: 1,
+        xp: 0,
+      });
     }
+    
+    // Mock the user object structure expected by routes
+    req.user = {
+      claims: { sub: mockUserId }
+    };
+    next();
   };
   
   // Auth routes
