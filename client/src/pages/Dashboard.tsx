@@ -12,7 +12,7 @@ import { CourseHeroSection } from "@/components/CourseHeroSection";
 import { QuickActions } from "@/components/QuickActions";
 import { GamificationSection } from "@/components/GamificationSection";
 import { motion } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 
