@@ -43,8 +43,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use("/uploads", express.static("uploads"));
 
+  // Development authentication middleware
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const devAuth = async (req: any, res: any, next: any) => {
+    if (isDevelopment) {
+      const mockUserId = "dev-user-123";
+      let user = await storage.getUser(mockUserId);
+      
+      if (!user) {
+        user = await storage.upsertUser({
+          id: mockUserId,
+          email: "dev@example.com",
+          firstName: "Dev",
+          lastName: "User",
+          profileImageUrl: null,
+          level: 1,
+          xp: 0,
+        });
+      }
+      
+      // Mock the user object structure expected by routes
+      req.user = {
+        claims: { sub: mockUserId }
+      };
+      next();
+    } else {
+      isAuthenticated(req, res, next);
+    }
+  };
+  
   // Auth routes
-  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+  app.get("/api/auth/user", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -56,7 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dashboard stats
-  app.get("/api/dashboard/stats", isAuthenticated, async (req: any, res) => {
+  app.get("/api/dashboard/stats", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const stats = await storage.getUserStats(userId);
@@ -68,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Recent activity
-  app.get("/api/dashboard/activity", isAuthenticated, async (req: any, res) => {
+  app.get("/api/dashboard/activity", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const recentInjections = await storage.getUserInjections(userId, 5);
@@ -107,7 +136,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           icon: "camera",
           color: "medical-blue",
         })),
-      ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
+      ].sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        return dateB - dateA;
+      }).slice(0, 10);
 
       res.json(activities);
     } catch (error) {
@@ -117,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Course routes
-  app.get("/api/courses", isAuthenticated, async (req: any, res) => {
+  app.get("/api/courses", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const courses = await storage.getUserCourses(userId);
@@ -128,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/courses", isAuthenticated, async (req: any, res) => {
+  app.post("/api/courses", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const courseData = insertCourseSchema.parse({ ...req.body, userId });
@@ -140,7 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/courses/:id", isAuthenticated, async (req: any, res) => {
+  app.get("/api/courses/:id", devAuth, async (req: any, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const course = await storage.getCourse(courseId);
@@ -157,7 +190,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Course compounds
-  app.post("/api/courses/:id/compounds", isAuthenticated, async (req: any, res) => {
+  app.post("/api/courses/:id/compounds", devAuth, async (req: any, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const compoundData = insertCourseCompoundSchema.parse({ ...req.body, courseId });
@@ -170,7 +203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Injection routes
-  app.get("/api/injections", isAuthenticated, async (req: any, res) => {
+  app.get("/api/injections", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const injections = await storage.getUserInjections(userId);
@@ -181,7 +214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/injections", isAuthenticated, upload.single("photo"), async (req: any, res) => {
+  app.post("/api/injections", devAuth, upload.single("photo"), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const injectionData = insertInjectionSchema.parse({
@@ -203,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Blood test routes
-  app.get("/api/blood-tests", isAuthenticated, async (req: any, res) => {
+  app.get("/api/blood-tests", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const bloodTests = await storage.getUserBloodTests(userId);
@@ -214,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/blood-tests", isAuthenticated, async (req: any, res) => {
+  app.post("/api/blood-tests", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const bloodTestData = insertBloodTestSchema.parse({
@@ -233,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Progress photo routes
-  app.get("/api/progress-photos", isAuthenticated, async (req: any, res) => {
+  app.get("/api/progress-photos", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const photos = await storage.getUserProgressPhotos(userId);
@@ -244,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/progress-photos", isAuthenticated, upload.single("photo"), async (req: any, res) => {
+  app.post("/api/progress-photos", devAuth, upload.single("photo"), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       
@@ -270,7 +303,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Achievement routes
-  app.get("/api/achievements", isAuthenticated, async (req: any, res) => {
+  app.get("/api/achievements", devAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const achievements = await storage.getUserAchievements(userId);

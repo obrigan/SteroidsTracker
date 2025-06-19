@@ -8,8 +8,9 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
+// For development, create a mock domain if REPLIT_DOMAINS is not set
 if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+  process.env.REPLIT_DOMAINS = "localhost";
 }
 
 const getOidcConfig = memoize(
