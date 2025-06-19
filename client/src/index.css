@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme colors (fallback) */
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.75rem;
+  
+  /* Medical theme colors */
+  --medical-blue: hsl(207, 90%, 54%);
+  --health-green: hsl(122, 39%, 49%);
+  --energy-orange: hsl(36, 100%, 50%);
+  --medical-red: hsl(4, 90%, 58%);
+  --deep-black: hsl(0, 0%, 0%);
+  --dark-surface: hsl(0, 0%, 7%);
+  --card-surface: hsl(0, 0%, 12%);
+  --card-elevated: hsl(0, 0%, 18%);
+  --card-highest: hsl(0, 0%, 24%);
+}
+
+.dark {
+  /* Dark theme - Primary theme for the app */
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 12%);
+  --muted-foreground: hsl(0, 0%, 64.9%);
+  --popover: hsl(0, 0%, 7%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(0, 0%, 12%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 18%);
+  --input: hsl(0, 0%, 18%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(0, 0%, 18%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(0, 0%, 18%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(4, 90%, 58%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(0, 0%, 83.9%);
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Force dark mode always */
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-deep-black text-foreground font-sans antialiased;
+    /* Always apply dark class */
+    @apply dark;
+    /* Mobile optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent zoom on input focus */
+    touch-action: manipulation;
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom color classes for medical theme */
+  .bg-medical-blue { background-color: var(--medical-blue); }
+  .bg-health-green { background-color: var(--health-green); }
+  .bg-energy-orange { background-color: var(--energy-orange); }
+  .bg-medical-red { background-color: var(--medical-red); }
+  .bg-deep-black { background-color: var(--deep-black); }
+  .bg-dark-surface { background-color: var(--dark-surface); }
+  .bg-card-surface { background-color: var(--card-surface); }
+  .bg-card-elevated { background-color: var(--card-elevated); }
+  .bg-card-highest { background-color: var(--card-highest); }
+
+  .text-medical-blue { color: var(--medical-blue); }
+  .text-health-green { color: var(--health-green); }
+  .text-energy-orange { color: var(--energy-orange); }
+  .text-medical-red { color: var(--medical-red); }
+  .text-deep-black { color: var(--deep-black); }
+  .text-dark-surface { color: var(--dark-surface); }
+
+  .border-medical-blue { border-color: var(--medical-blue); }
+  .border-health-green { border-color: var(--health-green); }
+  .border-energy-orange { border-color: var(--energy-orange); }
+  .border-medical-red { border-color: var(--medical-red); }
+
+  /* Google Sans font for headings */
+  .font-google-sans {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+  }
+
+  /* Touch-friendly sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Glass effect for modals and overlays */
+  .glass-effect {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(30, 30, 30, 0.8);
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Progress ring animations */
+  @keyframes progress-ring {
+    from { 
+      stroke-dasharray: 0 251.2; 
+    }
+    to {
+      stroke-dasharray: var(--progress, 0) 251.2;
+    }
+  }
+
+  .progress-ring-animation {
+    animation: progress-ring 2s ease-out forwards;
+  }
+
+  /* Celebration animations */
+  @keyframes celebration {
+    0% { 
+      transform: scale(1) rotate(0deg); 
+    }
+    50% { 
+      transform: scale(1.2) rotate(180deg); 
+    }
+    100% { 
+      transform: scale(1) rotate(360deg); 
+    }
+  }
+
+  .celebration-animation {
+    animation: celebration 0.6s ease-out;
+  }
+
+  /* Float animation */
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0px); 
+    }
+    50% { 
+      transform: translateY(-10px); 
+    }
+  }
+
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Custom scrollbar for desktop */
+  @media (min-width: 768px) {
+    body::-webkit-scrollbar {
+      display: block;
+      width: 6px;
+    }
+    
+    body::-webkit-scrollbar-track {
+      background: var(--card-surface);
+    }
+    
+    body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    
+    body::-webkit-scrollbar-thumb:hover {
+      background: var(--muted-foreground);
+    }
+  }
+
+  /* PWA specific styles */
+  @media (display-mode: standalone) {
+    body {
+      /* Add extra padding for status bar in PWA mode */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+
+  /* Input focus styles */
+  input:focus,
+  textarea:focus,
+  button:focus {
+    outline: 2px solid var(--medical-blue);
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .bg-card-surface {
+      background-color: hsl(0, 0%, 8%);
+      border: 1px solid hsl(0, 0%, 30%);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .progress-ring-animation,
+    .celebration-animation,
+    .float-animation,
+    .transition-smooth {
+      animation: none;
+      transition: none;
+    }
+  }
+}
+
+/* Custom components */
+@layer components {
+  .fab-shadow {
+    box-shadow: 
+      0 4px 8px 0 rgba(25, 118, 210, 0.4),
+      0 6px 20px 0 rgba(25, 118, 210, 0.2);
+  }
+
+  .progress-ring {
+    transform: rotate(-90deg);
+  }
+
+  .progress-circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+
+  /* Bottom navigation specific styles */
+  .bottom-nav {
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-smooth hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  /* Button press animations */
+  .button-press {
+    @apply transition-smooth active:scale-95;
+  }
+}
+
+/* Utilities */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(45deg, var(--medical-blue), var(--health-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(45deg, var(--medical-blue), var(--health-green)) 1;
+  }
+
+  /* Safe area utilities for PWA */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
