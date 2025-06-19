@@ -1,3 +1,4 @@
+import React from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Home, Pill, Syringe, TestTube, User, BookOpen } from "lucide-react";
@@ -62,3 +63,5 @@ export function BottomNavigation() {
     </nav>
   );
 }
+
+export default BottomNavigation;
