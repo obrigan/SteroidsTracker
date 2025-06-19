@@ -23,9 +23,7 @@ const formSchema = insertInjectionSchema.extend({
   injectionTime: z.string().min(1, "Время обязательно"),
 });
 
-type Fimport React from "react";
-
-ormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>;
 
 interface CreateInjectionModalProps {
   isOpen: boolean;
