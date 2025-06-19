@@ -1,4 +1,5 @@
-import { useRef } from "react";
+
+import React, { useRef } from "react";
 
 export function TestComponent() {
   const testRef = useRef<HTMLDivElement>(null);
@@ -9,3 +10,5 @@ export function TestComponent() {
     </div>
   );
 }
+
+export default TestComponent;
