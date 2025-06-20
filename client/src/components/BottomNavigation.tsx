@@ -1,4 +1,3 @@
-
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Home, Pill, Syringe, TestTube, User, BookOpen } from "lucide-react";
@@ -29,7 +28,7 @@ export function BottomNavigation() {
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
-            
+
             return (
               <button
                 key={tab.id}
