@@ -65,21 +65,15 @@ export default function BloodTests() {
   };
 
   const getKeyResults = (results: Record<string, any>) => {
-    // Extract key hormonal markers that are commonly tracked
     const keyMarkers = [
       "testosterone_total",
       "testosterone_free", 
       "estradiol",
-      "lh",
-      "fsh",
-      "shbg",
-      "liver_alt",
-      "liver_ast"
+      "liver_alt"
     ];
     
     return keyMarkers
       .filter(marker => results[marker] !== undefined)
-      .slice(0, 3) // Show max 3 key results
       .map(marker => ({
         name: marker.replace(/_/g, " ").toUpperCase(),
         value: results[marker],
@@ -164,7 +158,7 @@ export default function BloodTests() {
           )}
 
           {/* Blood Tests List */}
-          <div className="px-6 space-y-4"></div>
+          <div className="px-6 space-y-4">
             {bloodTests && bloodTests.length > 0 ? (
               bloodTests.map((test, index) => {
                 const keyResults = getKeyResults(test.results);
@@ -195,86 +189,75 @@ export default function BloodTests() {
                               </div>
                             </div>
                           </div>
-                          {hasAlerts(test.alertFlags) && (
-                            <div className="flex items-center space-x-1 text-medical-red">
-                              <AlertTriangle className="w-4 h-4" />
-                              <span className="text-xs">Alert</span>
-                            </div>
-                          )}
+                          <div className="flex items-center space-x-2">
+                            {hasAlerts(test.alertFlags) && (
+                              <Badge variant="destructive" className="bg-medical-red/20 text-medical-red border-medical-red/30">
+                                <AlertTriangle className="w-3 h-3 mr-1" />
+                                Alert
+                              </Badge>
+                            )}
+                            <Badge variant="secondary" className="bg-energy-orange/20 text-energy-orange border-energy-orange/30">
+                              +{test.xpEarned} XP
+                            </Badge>
+                          </div>
                         </div>
                       </CardHeader>
                       
-                      <CardContent>
+                      <CardContent className="pt-0">
                         {/* Key Results */}
-                        {keyResults.length > 0 && (
-                          <div className="mb-4">
-                            <h4 className="text-sm font-medium text-gray-300 mb-2">Key Results</h4>
-                            <div className="grid grid-cols-1 gap-2">
-                              {keyResults.map((result, idx) => (
-                                <div key={idx} className="flex items-center justify-between text-sm">
-                                  <span className="text-gray-400">{result.name}</span>
-                                  <span className="text-white font-medium">
-                                    {result.value} {result.unit}
-                                  </span>
-                                </div>
-                              ))}
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                          {keyResults.map((result, idx) => (
+                            <div key={idx} className="bg-card-background/50 rounded-lg p-3">
+                              <div className="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                                {result.name}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-bold text-white">
+                                  {result.value}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {result.unit}
+                                </span>
+                              </div>
                             </div>
+                          ))}
+                        </div>
+
+                        {/* Doctor Notes */}
+                        {test.doctorNotes && (
+                          <div className="mb-4 p-3 bg-medical-blue/10 rounded-lg border border-medical-blue/20">
+                            <div className="text-xs text-medical-blue uppercase tracking-wide mb-1">
+                              Doctor Notes
+                            </div>
+                            <p className="text-sm text-gray-300">{test.doctorNotes}</p>
                           </div>
                         )}
 
                         {/* Alert Flags */}
                         {hasAlerts(test.alertFlags) && (
                           <div className="mb-4">
-                            <div className="flex flex-wrap gap-1">
-                              {test.alertFlags.slice(0, 2).map((flag, idx) => (
-                                <Badge key={idx} variant="destructive" className="text-xs">
-                                  {flag.replace(/_/g, " ")}
-                                </Badge>
+                            <div className="text-xs text-medical-red uppercase tracking-wide mb-2">
+                              Health Alerts
+                            </div>
+                            <div className="space-y-2">
+                              {test.alertFlags.map((flag, idx) => (
+                                <div key={idx} className="flex items-center space-x-2 text-sm">
+                                  <AlertTriangle className="w-4 h-4 text-medical-red flex-shrink-0" />
+                                  <span className="text-gray-300">{flag}</span>
+                                </div>
                               ))}
-                              {test.alertFlags.length > 2 && (
-                                <Badge variant="outline" className="text-xs text-gray-400">
-                                  +{test.alertFlags.length - 2} more
-                                </Badge>
-                              )}
                             </div>
                           </div>
                         )}
 
-                        {/* Doctor Notes */}
-                        {test.doctorNotes && (
-                          <div className="mb-4">
-                            <p className="text-sm text-gray-400 italic">
-                              "{test.doctorNotes}"
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Bottom Row */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            {test.xpEarned && (
-                              <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
-                                +{test.xpEarned} XP
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-energy-orange hover:text-energy-orange/90 hover:bg-energy-orange/10"
-                            >
-                              <TrendingUp className="w-4 h-4 mr-1" />
-                              Trends
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-medical-blue hover:text-medical-blue/90 hover:bg-medical-blue/10"
-                            >
-                              View Full
-                            </Button>
-                          </div>
+                        {/* Action Buttons */}
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm" className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800">
+                            View Details
+                          </Button>
+                          <Button variant="outline" size="sm" className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800">
+                            Share with Doctor
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -283,28 +266,19 @@ export default function BloodTests() {
               })
             ) : (
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 className="text-center py-12"
               >
-                <Card className="bg-card-surface border-gray-800">
-                  <CardContent className="p-8">
-                    <div className="text-6xl mb-4">🩸</div>
-                    <h3 className="text-xl font-google-sans font-semibold text-white mb-2">
-                      No Blood Tests Yet
-                    </h3>
-                    <p className="text-gray-400 mb-6">
-                      Regular blood work is essential for monitoring your health during cycles
-                    </p>
-                    <Button
-                      className="bg-gradient-to-r from-energy-orange to-energy-orange/80 hover:from-energy-orange/90 hover:to-energy-orange/70"
-                      onClick={() => setLocation("/add-first-test")}
-                    >
-                      <TestTube className="w-4 h-4 mr-2" />
-                      Add Your First Test
-                    </Button>
-                  </CardContent>
-                </Card>
+                <TestTube className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-white mb-2">No Blood Tests Yet</h3>
+                <p className="text-gray-400 mb-4">Start tracking your health markers</p>
+                <Button 
+                  onClick={() => setIsCreateModalOpen(true)}
+                  className="bg-medical-blue hover:bg-medical-blue/90"
+                >
+                  Add First Test
+                </Button>
               </motion.div>
             )}
           </div>
@@ -339,7 +313,16 @@ export default function BloodTests() {
       </div>
 
       {/* Floating Action Button */}
-      <FloatingActionButton icon={<TestTube className="w-6 h-6" />} />
+      <FloatingActionButton 
+        onClick={() => setIsCreateModalOpen(true)}
+        icon={<TestTube className="w-6 h-6" />} 
+      />
+
+      {/* Create Blood Test Modal */}
+      <CreateBloodTestModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
     </>
   );
 }
