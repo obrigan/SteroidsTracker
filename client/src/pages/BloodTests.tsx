@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { CreateBloodTestModal } from "@/components/CreateBloodTestModal";
+import { AIAnalysisCard } from "@/components/AIAnalysisCard";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -147,8 +148,23 @@ export default function BloodTests() {
             </div>
           </motion.div>
 
+          {/* AI Analysis Section */}
+          {bloodTests && bloodTests.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="px-6"
+            >
+              <AIAnalysisCard 
+                bloodTestResults={bloodTests[0]?.results || {}} 
+                courseData={null}
+              />
+            </motion.div>
+          )}
+
           {/* Blood Tests List */}
-          <div className="px-6 space-y-4">
+          <div className="px-6 space-y-4"></div>
             {bloodTests && bloodTests.length > 0 ? (
               bloodTests.map((test, index) => {
                 const keyResults = getKeyResults(test.results);

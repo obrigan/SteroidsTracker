@@ -19,6 +19,7 @@ import Profile from "@/pages/Profile";
 import BloodTests from "@/pages/BloodTests";
 import Analytics from "@/pages/Analytics";
 import BiometricLogin from "@/pages/BiometricLogin";
+import EducationHub from "@/pages/EducationHub";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,6 +37,7 @@ function Router() {
             <Route path="/blood-tests" component={BloodTests} />
             <Route path="/learning" component={Learning} />
             <Route path="/learning/module/:moduleId" component={LearningModule} />
+            <Route path="/education" component={EducationHub} />
             <Route path="/learning/calculator/:calculatorId" component={Calculator} />
             <Route path="/add-first-test" component={AddFirstTest} />
             <Route path="/profile" component={Profile} />
