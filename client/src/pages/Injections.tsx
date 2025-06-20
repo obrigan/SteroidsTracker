@@ -12,7 +12,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Syringe, MapPin, Clock, Camera, Plus, Zap, Award } from "lucide-react";
 
-import React from "react";
+
 
 interface Injection {
   id: number;

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Calendar, Clock, Target } from "lucide-react";
 import { ProgressRing } from "./ProgressRing";
 import { Card } from "./ui/card";
