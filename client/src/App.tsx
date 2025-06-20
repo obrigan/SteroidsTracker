@@ -14,6 +14,7 @@ import Injections from "@/pages/Injections";
 import BloodTests from "@/pages/BloodTests";
 import Learning from "@/pages/Learning";
 import Profile from "@/pages/Profile";
+import BiometricLogin from "@/pages/BiometricLogin";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -31,12 +32,13 @@ function Router() {
             <Route path="/blood-tests" component={BloodTests} />
             <Route path="/learning" component={Learning} />
             <Route path="/profile" component={Profile} />
+            <Route path="/biometric-login" component={BiometricLogin} />
           </>
         )}
         {/* Fallback to 404 */}
         <Route component={NotFound} />
       </Switch>
-      
+
       {/* Bottom Navigation - Only show when authenticated */}
       {!isLoading && isAuthenticated && <BottomNavigation />}
     </div>

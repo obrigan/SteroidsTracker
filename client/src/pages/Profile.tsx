@@ -1,7 +1,4 @@
-The code is updated to include biometric authentication functionality with UI elements and state management.
-```
 
-```replit_final_file
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,7 +28,6 @@ import {
   Camera,
   Fingerprint
 } from "lucide-react";
-import { BiometricAuth } from "@/lib/biometricAuth";
 
 interface Achievement {
   id: number;
@@ -51,6 +47,66 @@ interface DashboardStats {
   currentStreak: number;
   level: number;
   xp: number;
+}
+
+// Простая реализация биометрической аутентификации
+class BiometricAuth {
+  static async isAvailable(): Promise<boolean> {
+    return 'credentials' in navigator && 'create' in navigator.credentials;
+  }
+
+  static async register(userId: string, userName: string): Promise<any> {
+    if (!await this.isAvailable()) {
+      throw new Error('WebAuthn not supported');
+    }
+
+    const credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: new Uint8Array(32),
+        rp: {
+          name: "SteroidTracker",
+          id: window.location.hostname,
+        },
+        user: {
+          id: new TextEncoder().encode(userId),
+          name: userName,
+          displayName: userName,
+        },
+        pubKeyCredParams: [{alg: -7, type: "public-key"}],
+        authenticatorSelection: {
+          authenticatorAttachment: "platform",
+          userVerification: "required"
+        },
+        timeout: 60000,
+      }
+    });
+
+    return credential;
+  }
+
+  static async authenticate(): Promise<any> {
+    if (!await this.isAvailable()) {
+      throw new Error('WebAuthn not supported');
+    }
+
+    const credentialId = localStorage.getItem('biometric_credential_id');
+    if (!credentialId) {
+      throw new Error('No biometric credential found');
+    }
+
+    const credential = await navigator.credentials.get({
+      publicKey: {
+        challenge: new Uint8Array(32),
+        allowCredentials: [{
+          id: new TextEncoder().encode(credentialId),
+          type: 'public-key'
+        }],
+        timeout: 60000,
+      }
+    });
+
+    return credential;
+  }
 }
 
 export default function Profile() {
@@ -414,6 +470,9 @@ export default function Profile() {
                   />
                 )}
               </div>
+
+              <Separator className="bg-gray-700" />
+
               <Button
                 variant="ghost"
                 className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
@@ -452,5 +511,3 @@ export default function Profile() {
     </div>
   );
 }
-```The code is updated to include biometric authentication functionality with UI elements and state management.
-```
