@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -41,6 +42,7 @@ interface Calculator {
 
 export default function Learning() {
   const [activeTab, setActiveTab] = useState("courses");
+  const [, setLocation] = useLocation();
 
   const learningModules: LearningModule[] = [
     {
@@ -187,7 +189,13 @@ export default function Learning() {
             <TabsContent value="courses" className="mt-6">
               <div className="space-y-4">
                 {learningModules.map((module) => (
-                  <Card key={module.id} className="bg-card-surface border-gray-700 p-6">
+                  <Card 
+                    key={module.id} 
+                    className={`bg-card-surface border-gray-700 p-6 transition-all ${
+                      module.isLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:border-medical-blue/50'
+                    }`}
+                    onClick={() => !module.isLocked && setLocation(`/learning/module/${module.id}`)}
+                  >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <div className={`p-2 rounded-lg ${module.isLocked ? 'bg-gray-700' : 'bg-medical-blue/20'}`}>
@@ -227,6 +235,12 @@ export default function Learning() {
                         size="sm"
                         disabled={module.isLocked}
                         className={module.isLocked ? "" : "bg-medical-blue hover:bg-medical-blue/90"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!module.isLocked) {
+                            setLocation(`/learning/module/${module.id}`);
+                          }
+                        }}
                       >
                         {module.isLocked ? "Заблокировано" : module.progress === 0 ? "Начать" : "Продолжить"}
                       </Button>
@@ -239,7 +253,11 @@ export default function Learning() {
             <TabsContent value="calculators" className="mt-6">
               <div className="space-y-4">
                 {calculators.map((calc) => (
-                  <Card key={calc.id} className="bg-card-surface border-gray-700 p-6">
+                  <Card 
+                    key={calc.id} 
+                    className="bg-card-surface border-gray-700 p-6 cursor-pointer hover:border-energy-orange/50 transition-all"
+                    onClick={() => setLocation(`/learning/calculator/${calc.id}`)}
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="p-2 bg-energy-orange/20 rounded-lg text-energy-orange">
@@ -250,7 +268,14 @@ export default function Learning() {
                           <p className="text-sm text-gray-400 mt-1">{calc.description}</p>
                         </div>
                       </div>
-                      <Button className="bg-energy-orange hover:bg-energy-orange/90" size="sm">
+                      <Button 
+                        className="bg-energy-orange hover:bg-energy-orange/90" 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation(`/learning/calculator/${calc.id}`);
+                        }}
+                      >
                         Открыть
                       </Button>
                     </div>
@@ -266,7 +291,11 @@ export default function Learning() {
                 <p className="text-gray-400 text-sm mb-6">
                   Завершите курсы обучения, чтобы получить сертификаты
                 </p>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setActiveTab("courses")}
+                >
                   Начать обучение
                 </Button>
               </div>

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ interface BloodTest {
 export default function BloodTests() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
@@ -280,6 +282,7 @@ export default function BloodTests() {
                     </p>
                     <Button
                       className="bg-gradient-to-r from-energy-orange to-energy-orange/80 hover:from-energy-orange/90 hover:to-energy-orange/70"
+                      onClick={() => setLocation("/add-first-test")}
                     >
                       <TestTube className="w-4 h-4 mr-2" />
                       Add Your First Test

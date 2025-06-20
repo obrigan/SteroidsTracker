@@ -13,6 +13,9 @@ import Courses from "@/pages/Courses";
 import Injections from "@/pages/Injections";
 import BloodTests from "@/pages/BloodTests";
 import Learning from "@/pages/Learning";
+import LearningModule from "@/pages/LearningModule";
+import Calculator from "@/pages/Calculator";
+import AddFirstTest from "@/pages/AddFirstTest";
 import Profile from "@/pages/Profile";
 import BiometricLogin from "@/pages/BiometricLogin";
 
@@ -31,6 +34,9 @@ function Router() {
             <Route path="/injections" component={Injections} />
             <Route path="/blood-tests" component={BloodTests} />
             <Route path="/learning" component={Learning} />
+            <Route path="/learning/module/:moduleId" component={LearningModule} />
+            <Route path="/learning/calculator/:calculatorId" component={Calculator} />
+            <Route path="/add-first-test" component={AddFirstTest} />
             <Route path="/profile" component={Profile} />
             <Route path="/biometric-login" component={BiometricLogin} />
           </>
