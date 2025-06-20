@@ -1,8 +1,38 @@
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { BiometricAuthComponent } from "@/components/BiometricAuth";
+import { BiometricAuth } from "@/lib/biometricAuth";
 
 export default function Landing() {
+  const [showBiometric, setShowBiometric] = useState(false);
+  const [biometricSupported, setBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    checkBiometricSupport();
+  }, []);
+
+  const checkBiometricSupport = async () => {
+    const supported = await BiometricAuth.isAvailable();
+    setBiometricSupported(supported);
+    
+    // Показываем биометрию если она поддерживается и уже настроена
+    const hasCredential = localStorage.getItem('biometric_credential_id');
+    if (supported && hasCredential) {
+      setShowBiometric(true);
+    }
+  };
+
+  const handleBiometricSuccess = () => {
+    // Перенаправляем на главную страницу после успешной биометрической аутентификации
+    window.location.href = '/';
+  };
+
+  const handleBiometricRegister = () => {
+    setShowBiometric(true);
+  };
+
   return (
     <div className="min-h-screen bg-deep-black text-white flex flex-col">
       {/* PWA Status Bar */}
@@ -64,13 +94,34 @@ export default function Landing() {
             </Card>
           </div>
 
-          {/* Login Button */}
-          <Button
-            onClick={() => window.location.href = '/api/login'}
-            className="w-full h-14 bg-gradient-to-r from-medical-blue to-health-green hover:from-medical-blue/90 hover:to-health-green/90 text-white font-semibold text-lg rounded-2xl transition-all duration-300 transform hover:scale-105"
-          >
-            Get Started
-          </Button>
+          {/* Biometric Authentication */}
+          {showBiometric ? (
+            <BiometricAuthComponent 
+              onSuccess={handleBiometricSuccess}
+              onRegister={handleBiometricRegister}
+            />
+          ) : (
+            <div className="space-y-4">
+              {/* Login Button */}
+              <Button
+                onClick={() => window.location.href = '/api/login'}
+                className="w-full h-14 bg-gradient-to-r from-medical-blue to-health-green hover:from-medical-blue/90 hover:to-health-green/90 text-white font-semibold text-lg rounded-2xl transition-all duration-300 transform hover:scale-105"
+              >
+                Get Started
+              </Button>
+              
+              {/* Biometric Setup Option */}
+              {biometricSupported && (
+                <Button
+                  onClick={() => setShowBiometric(true)}
+                  variant="outline"
+                  className="w-full h-12 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white transition-all duration-300"
+                >
+                  Настроить биометрический вход
+                </Button>
+              )}
+            </div>
+          )}
           
           <p className="text-xs text-center text-gray-500">
             By continuing, you agree to our Terms of Service and Privacy Policy

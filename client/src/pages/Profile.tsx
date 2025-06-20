@@ -1,11 +1,17 @@
+The code is updated to include biometric authentication functionality with UI elements and state management.
+```
+
+```replit_final_file
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -21,8 +27,11 @@ import {
   Star,
   Award,
   Target,
-  Calendar
+  Calendar,
+  Camera,
+  Fingerprint
 } from "lucide-react";
+import { BiometricAuth } from "@/lib/biometricAuth";
 
 interface Achievement {
   id: number;
@@ -47,6 +56,53 @@ interface DashboardStats {
 export default function Profile() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricSupported, setBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    checkBiometricStatus();
+  }, []);
+
+  const checkBiometricStatus = async () => {
+    const supported = await BiometricAuth.isAvailable();
+    setBiometricSupported(supported);
+
+    const hasCredential = localStorage.getItem('biometric_credential_id');
+    setBiometricEnabled(!!hasCredential);
+  };
+
+  const handleBiometricToggle = async (enabled: boolean) => {
+    if (enabled) {
+      try {
+        const credential = await BiometricAuth.register(
+          user?.id || "dev-user-123",
+          `${user?.firstName} ${user?.lastName}` || "Dev User"
+        );
+
+        if (credential) {
+          localStorage.setItem('biometric_credential_id', credential.id);
+          setBiometricEnabled(true);
+          toast({
+            title: "Биометрия включена",
+            description: "Теперь вы можете входить с помощью отпечатка пальца",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Ошибка",
+          description: "Не удалось настроить биометрию",
+          variant: "destructive",
+        });
+      }
+    } else {
+      localStorage.removeItem('biometric_credential_id');
+      setBiometricEnabled(false);
+      toast({
+        title: "Биометрия отключена",
+        description: "Биометрический вход больше не доступен",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -129,11 +185,11 @@ export default function Profile() {
     <div className="min-h-screen bg-deep-black text-white pb-24">
       {/* PWA Status Bar */}
       <div className="h-1 bg-gradient-to-r from-medical-blue via-health-green to-energy-orange"></div>
-      
+
       <div className="max-w-md mx-auto">
         {/* Safe area */}
         <div className="h-8"></div>
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -196,7 +252,7 @@ export default function Profile() {
                   </div>
                 </div>
               </div>
-              
+
               {/* XP Progress */}
               <div className="mb-4">
                 <div className="flex justify-between text-sm text-gray-400 mb-2">
@@ -328,13 +384,36 @@ export default function Profile() {
               <CardTitle className="text-white font-google-sans">Settings & Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
-              >
-                <Bell className="w-4 h-4 mr-3" />
-                Notifications
-              </Button>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Bell className="w-5 h-5 text-energy-orange" />
+                  <span>Push-уведомления</span>
+                </div>
+                <Button variant="ghost" size="sm" className="text-gray-400">
+                  Настроить
+                </Button>
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              {/* Biometric Settings */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Fingerprint className="w-5 h-5 text-medical-blue" />
+                  <div>
+                    <span>Биометрический вход</span>
+                    {!biometricSupported && (
+                      <p className="text-xs text-gray-500">Не поддерживается на этом устройстве</p>
+                    )}
+                  </div>
+                </div>
+                {biometricSupported && (
+                  <Switch
+                    checked={biometricEnabled}
+                    onCheckedChange={handleBiometricToggle}
+                  />
+                )}
+              </div>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
@@ -373,3 +452,5 @@ export default function Profile() {
     </div>
   );
 }
+```The code is updated to include biometric authentication functionality with UI elements and state management.
+```
