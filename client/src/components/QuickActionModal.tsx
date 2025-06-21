@@ -76,10 +76,10 @@ export function QuickActionModal({ isOpen, onClose }: QuickActionModalProps) {
               damping: 30
             }}
           >
-            <Card className="bg-card-surface border-gray-800 rounded-t-3xl rounded-b-none">
+            <Card className="bg-card-surface border-card-elevated shadow-2xl rounded-t-3xl rounded-b-none">
               <CardHeader className="text-center pb-4">
                 {/* Handle bar */}
-                <div className="w-12 h-1.5 bg-gray-600 rounded-full mx-auto mb-4"></div>
+                <div className="w-12 h-1.5 bg-gray-400 rounded-full mx-auto mb-4"></div>
                 
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl font-google-sans font-bold text-white">
@@ -113,7 +113,7 @@ export function QuickActionModal({ isOpen, onClose }: QuickActionModalProps) {
                       >
                         <Button
                           variant="outline"
-                          className={`${action.bgColor} h-auto p-4 text-center touch-target transition-smooth flex flex-col items-center justify-center space-y-2 w-full`}
+                          className={`${action.bgColor} h-20 text-center border-2 border-transparent hover:border-white/20 transition-all duration-200 flex flex-col items-center justify-center space-y-2 w-full`}
                           onClick={() => {
                             // Handle action click
                             console.log(`${action.id} clicked`);

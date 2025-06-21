@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AdvancedAchievements } from "@/components/AdvancedAchievements";
 import { motion } from "framer-motion";
 import { User, Settings, LogOut, Award, TrendingUp, Calendar, Shield } from "lucide-react";
 
@@ -69,7 +70,7 @@ export default function Profile() {
             <Card className="bg-card-surface border-gray-800">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-medical-blue">
-                  {user?.totalCourses || 0}
+                  0
                 </div>
                 <div className="text-sm text-gray-400">Courses</div>
               </CardContent>
@@ -77,52 +78,19 @@ export default function Profile() {
             <Card className="bg-card-surface border-gray-800">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-energy-orange">
-                  {user?.totalInjections || 0}
+                  0
                 </div>
                 <div className="text-sm text-gray-400">Injections</div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Achievements */}
-          <Card className="bg-card-surface border-gray-800 mb-6">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Award className="w-5 h-5 mr-2" />
-                Achievements
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <div
-                  key={achievement.name}
-                  className={`flex items-center space-x-3 p-3 rounded-lg ${
-                    achievement.earned 
-                      ? 'bg-health-green/10 border border-health-green/30' 
-                      : 'bg-gray-800/50'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    achievement.earned 
-                      ? 'bg-health-green/20 text-health-green' 
-                      : 'bg-gray-700 text-gray-400'
-                  }`}>
-                    <Award className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className={`font-semibold ${
-                      achievement.earned ? 'text-white' : 'text-gray-400'
-                    }`}>
-                      {achievement.name}
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      {achievement.description}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          {/* Advanced Achievements */}
+          <AdvancedAchievements 
+            userLevel={user?.level || 1}
+            userXP={user?.xp || 0}
+            currentStreak={0}
+          />
 
           {/* Actions */}
           <div className="space-y-3">

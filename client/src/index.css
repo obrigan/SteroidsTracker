@@ -274,6 +274,25 @@
   .button-press {
     @apply transition-smooth active:scale-95;
   }
+
+  /* Modal improvements */
+  .modal-content {
+    @apply bg-card-surface border-card-elevated shadow-2xl backdrop-blur-xl;
+  }
+
+  /* Form improvements */
+  .form-input {
+    @apply bg-card-surface border-card-elevated text-white placeholder-gray-400 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20;
+  }
+
+  .form-select {
+    @apply bg-card-surface border-card-elevated text-white;
+  }
+
+  /* Better mobile touch targets */
+  .mobile-touch {
+    @apply min-h-12 min-w-12;
+  }
 }
 
 /* Utilities */

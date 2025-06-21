@@ -11,6 +11,8 @@ import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { CourseHeroSection } from "@/components/CourseHeroSection";
 import { QuickActions } from "@/components/QuickActions";
 import { GamificationSection } from "@/components/GamificationSection";
+import { AIInsights } from "@/components/AIInsights";
+import { SmartReminders } from "@/components/SmartReminders";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -165,6 +167,22 @@ export default function Dashboard() {
               onAddInjection={() => setIsQuickActionOpen(true)}
               onAddBloodTest={() => setIsQuickActionOpen(true)}
               onAddPhoto={() => setIsQuickActionOpen(true)}
+            />
+
+            {/* Smart Reminders Section */}
+            <SmartReminders 
+              userId={user?.id || ""}
+              userPreferences={{}}
+            />
+
+            {/* AI Insights Section */}
+            <AIInsights 
+              userStats={{
+                totalInjections: stats?.totalInjections || 0,
+                totalBloodTests: stats?.totalBloodTests || 0,
+                currentStreak: stats?.currentStreak || 0,
+                level: stats?.level || 1
+              }}
             />
           </motion.div>
           

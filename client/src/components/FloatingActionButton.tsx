@@ -30,7 +30,9 @@ export function FloatingActionButton({
     >
       <Button
         onClick={onClick}
-        className="w-14 h-14 bg-gradient-to-br from-medical-blue to-medical-blue/80 hover:from-medical-blue hover:to-medical-blue/90 rounded-full shadow-2xl fab-shadow transition-smooth touch-target"
+        variant="default"
+        size="fab"
+        className="bg-gradient-to-br from-medical-blue to-health-green hover:from-medical-blue/90 hover:to-health-green/90 shadow-2xl fab-shadow"
       >
         {icon}
       </Button>

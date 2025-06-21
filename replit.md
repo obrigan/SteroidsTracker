@@ -110,10 +110,48 @@ SteroidTracker is a professional web application for tracking anabolic steroid c
 ```
 Changelog:
 - June 19, 2025. Initial setup
+- June 21, 2025. Major UI/UX improvements and component integration:
+  * Fixed database connection by pushing schema to create missing tables
+  * Enhanced button styles with better variants, sizes, and touch targets
+  * Improved modal dialogs with glass effects and rounded corners
+  * Integrated AI Insights, Smart Reminders, and Advanced Achievements components
+  * Connected SocialHub to Social page for community features
+  * Enhanced FloatingActionButton with gradient design
+  * Updated CSS with mobile-first responsive improvements
+  * Fixed TypeScript errors in Profile page
+  * Added new button variants (success, warning) and sizes (fab)
 ```
 
 ## User Preferences
 
 ```
 Preferred communication style: Simple, everyday language.
+UI/UX Preferences: Modern, mobile-first design with rounded corners, gradients, and smooth animations.
 ```
+
+## Development Recommendations
+
+### UI/UX Best Practices
+1. **Mobile-First Design**: Always design for mobile screens first, then enhance for desktop
+2. **Touch Targets**: Ensure all interactive elements are at least 44px (touch-target class)
+3. **Consistent Styling**: Use design system components with consistent colors and spacing
+4. **Smooth Animations**: Use framer-motion for micro-interactions and page transitions
+5. **Glass Effects**: Apply backdrop-blur for modern overlay appearances
+
+### Component Architecture
+1. **Modular Components**: Keep components focused and reusable
+2. **Type Safety**: Always use TypeScript interfaces for props and data
+3. **Error Handling**: Implement proper error states and loading indicators
+4. **Accessibility**: Include proper ARIA labels and keyboard navigation
+
+### Performance Optimization
+1. **Code Splitting**: Use dynamic imports for large components
+2. **Image Optimization**: Compress images and use appropriate formats
+3. **Bundle Analysis**: Regularly check bundle size with webpack-bundle-analyzer
+4. **Caching Strategy**: Implement proper caching for API calls and static assets
+
+### Database Best Practices
+1. **Schema Design**: Keep schemas simple and focused
+2. **Migrations**: Always use db:push for schema changes
+3. **Data Validation**: Use Zod schemas for both client and server validation
+4. **Connection Pooling**: Utilize connection pooling for better performance
