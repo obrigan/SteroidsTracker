@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Home, Syringe, TestTube, BarChart3, User, Calculator, Brain } from "lucide-react";
+import { Home, Syringe, TestTube, BarChart3, User, Calculator, Brain, Users } from "lucide-react";
 
 const tabs = [
     { id: "dashboard", label: "Главная", icon: Home, path: "/" },
