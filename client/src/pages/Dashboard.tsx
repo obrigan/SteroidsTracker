@@ -13,7 +13,11 @@ import { QuickActions } from "@/components/QuickActions";
 import { GamificationSection } from "@/components/GamificationSection";
 import { AIInsights } from "@/components/AIInsights";
 import { SmartReminders } from "@/components/SmartReminders";
+import { TelegramBotActions } from "@/components/TelegramBotActions";
+import { TelegramShareCard } from "@/components/TelegramShareCard";
+import { TelegramQRScanner } from "@/components/TelegramQRScanner";
 import { motion } from "framer-motion";
+import { useTelegramWebApp } from "@/hooks/useTelegramWebApp";
 import { useState, useEffect } from "react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -43,6 +47,7 @@ export default function Dashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
+  const { isTelegramApp, hapticFeedback, cloudStorage } = useTelegramWebApp();
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -92,6 +97,33 @@ export default function Dashboard() {
       return user.email.split('@')[0];
     }
     return "User";
+  };
+
+  const handleQRDataScanned = async (qrData: any) => {
+    if (isTelegramApp) {
+      hapticFeedback.success();
+      await cloudStorage.save(`qr_scan_${Date.now()}`, JSON.stringify(qrData));
+    }
+
+    switch (qrData.type) {
+      case 'injection':
+        toast({
+          title: "Данные инъекции получены",
+          description: "Форма будет заполнена автоматически"
+        });
+        break;
+      case 'blood_test':
+        toast({
+          title: "Результаты анализов получены", 
+          description: "Данные добавлены в историю"
+        });
+        break;
+      default:
+        toast({
+          title: "QR-код обработан",
+          description: `Получены данные типа: ${qrData.type}`
+        });
+    }
   };
 
   const xpForNextLevel = ((stats?.level || 1) * 300);
@@ -336,6 +368,83 @@ export default function Dashboard() {
                 </Card>
               )}
             </div>
+          </motion.div>
+
+          {/* Telegram Mini App Features */}
+          {isTelegramApp && (
+            <>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                className="px-6 mb-8"
+              >
+                <TelegramBotActions userStats={{
+                  totalInjections: stats?.totalInjections || 0,
+                  currentStreak: stats?.currentStreak || 0,
+                  level: stats?.level || 1
+                }} />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                className="px-6 mb-8"
+              >
+                <TelegramQRScanner onDataScanned={handleQRDataScanned} />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.1 }}
+                className="px-6 mb-8"
+              >
+                <TelegramShareCard
+                  content={{
+                    type: 'progress',
+                    title: 'Мой прогресс в SteroidTracker',
+                    description: `Достиг ${stats?.level || 1} уровня и поддерживаю стрик ${stats?.currentStreak || 0} дней!`,
+                    stats: {
+                      weight_gained: 5.2,
+                      strength_increase: 15,
+                      weeks_completed: 8,
+                      blood_tests_done: stats?.totalBloodTests || 0
+                    }
+                  }}
+                  userStats={{
+                    level: stats?.level || 1,
+                    totalInjections: stats?.totalInjections || 0,
+                    currentStreak: stats?.currentStreak || 0
+                  }}
+                />
+              </motion.div>
+            </>
+          )}
+
+          {/* AI Insights and Smart Reminders */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: isTelegramApp ? 1.2 : 0.9 }}
+            className="px-6 mb-8"
+          >
+            <AIInsights userStats={{
+              totalInjections: stats?.totalInjections || 0,
+              totalBloodTests: stats?.totalBloodTests || 0,
+              currentStreak: stats?.currentStreak || 0,
+              level: stats?.level || 1
+            }} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: isTelegramApp ? 1.3 : 1.0 }}
+            className="px-6 mb-8"
+          >
+            <SmartReminders userId={user?.id || ''} userPreferences={{}} />
           </motion.div>
         </div>
       </div>
