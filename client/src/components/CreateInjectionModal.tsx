@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +21,8 @@ import { insertInjectionSchema } from "@shared/schema";
 const formSchema = insertInjectionSchema.extend({
   injectionDate: z.date({ required_error: "Дата инъекции обязательна" }),
   injectionTime: z.string().min(1, "Время обязательно"),
+  notes: z.string().nullable().optional(),
+  painLevel: z.number().nullable().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -335,7 +337,7 @@ export function CreateInjectionModal({ isOpen, onClose }: CreateInjectionModalPr
                       min={0}
                       max={10}
                       step={1}
-                      value={[field.value]}
+                      value={[field.value || 0]}
                       onValueChange={(value) => field.onChange(value[0])}
                       className="py-4"
                     />
@@ -358,6 +360,7 @@ export function CreateInjectionModal({ isOpen, onClose }: CreateInjectionModalPr
                   <FormControl>
                     <Textarea
                       {...field}
+                      value={field.value || ""}
                       placeholder="Реакция, побочные эффекты, особенности..."
                       className="bg-deep-black border-gray-700 text-white resize-none"
                       rows={3}

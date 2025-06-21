@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import { insertBloodTestSchema } from "@shared/schema";
 
 const formSchema = insertBloodTestSchema.extend({
   testDate: z.date({ required_error: "Дата анализа обязательна" }),
+  doctorNotes: z.string().nullable().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -378,6 +379,7 @@ export function CreateBloodTestModal({ isOpen, onClose }: CreateBloodTestModalPr
                   <FormControl>
                     <Textarea
                       {...field}
+                      value={field.value || ""}
                       placeholder="Комментарии врача, рекомендации..."
                       className="bg-deep-black border-gray-700 text-white resize-none"
                       rows={3}
